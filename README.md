@@ -64,13 +64,13 @@ Options:
 ```
 
 Columns:
-`wallTime` is time spent in function (including child function calls).
-`wallTime%` is time spent in function normalized to `main()` total time.
-`wallTime1` is average time spent in 1 function call, valued as `wallTime / count`.
-`ownTime` is time spent in function (excluding child function calls).
-`ownTime%` is `ownTime` normalized to to `main()` total time.
-`ownTime1` is average time spent in 1 function call (excluding child function calls), valued as `ownTime / count`.
-`count` is number of function calls happened.
+* `wallTime` is time spent in function (including child function calls).
+* `wallTime%` is time spent in function normalized to `main()` total time.
+* `wallTime1` is average time spent in 1 function call, valued as `wallTime / count`.
+* `ownTime` is time spent in function (excluding child function calls).
+* `ownTime%` is `ownTime` normalized to to `main()` total time.
+* `ownTime1` is average time spent in 1 function call (excluding child function calls), valued as `ownTime / count`.
+* `count` is number of function calls happened.
 
 
 ```
