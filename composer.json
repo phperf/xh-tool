@@ -1,0 +1,24 @@
+{
+    "name": "phperf/xh-tool",
+    "description": "XHPROF profile viewer CLI tool",
+    "type": "tool",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Viacheslav Poturaev",
+            "email": "vearutop@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Phperf\\XhTool\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">5.4",
+        "php-yaoi/php-yaoi": "^1.0"
+    },
+    "bin": [
+        "bin/xh-tool"
+    ]
+}

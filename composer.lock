@@ -1,0 +1,65 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "0d1e772a15806c1d94400f4df740138c",
+    "packages": [
+        {
+            "name": "php-yaoi/php-yaoi",
+            "version": "v1.0.40",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-yaoi/php-yaoi.git",
+                "reference": "1d2a9b2409b6aad18d46c2b581eaac62101535a1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-yaoi/php-yaoi/zipball/1d2a9b2409b6aad18d46c2b581eaac62101535a1",
+                "reference": "1d2a9b2409b6aad18d46c2b581eaac62101535a1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "codeclimate/php-test-reporter": "0.1.2",
+                "phpunit/phpunit": "4.8.23"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Yaoi\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Viacheslav Poturaev",
+                    "email": "vearutop@gmail.com",
+                    "homepage": "https://github.com/vearutop"
+                }
+            ],
+            "description": "Yaoi is yet another object interleaver",
+            "homepage": "https://github.com/php-yaoi/php-yaoi",
+            "keywords": [
+                "framework"
+            ],
+            "time": "2017-06-13T09:10:15+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">5.4"
+    },
+    "platform-dev": []
+}
