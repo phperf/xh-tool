@@ -19,6 +19,11 @@ composer require --dev phperf/xh-tool
 
 Get a serialized profile data file, example: `xhprof_report_sample.1518071438.9016.serialized`.
 
+You can get a profile of standalone script with [`phperf/php-profiler`](https://github.com/phperf/profiler-docker) docker image:
+```
+docker run --rm -v $(pwd):/code phperf/php-profiler php test_me.php
+```
+
 ### Info
 
 Get basic info about profile
