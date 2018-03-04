@@ -36,6 +36,10 @@ class Stats
 
             $keyParts = explode('==>', $key);
 
+            $item['cpu'] = isset($item['cpu']) ? $item['cpu'] : 0;
+            $item['mu'] = isset($item['mu']) ? $item['mu'] : 0;
+            $item['pmu'] = isset($item['pmu']) ? $item['pmu'] : 0;
+
             if (count($keyParts) !== 2) {
                 if ($key === 'main()') {
                     if (!isset($this->symbolStats[$key])) {
@@ -45,9 +49,16 @@ class Stats
                     } else {
                         $main = $this->symbolStats[$key];
                     }
+
+                    $main->cpuTime += $item['cpu'];
+                    $main->ownCpuTime += $item['cpu'];
                     $main->wallTime += $item['wt'];
                     $main->ownTime += $item['wt'];
                     $main->count += $item['ct'];
+                    $main->memoryUsage = $item['mu'];
+                    $main->peakMemoryUsage += $item['pmu'];
+                    $main->peakMemoryShift += $item['pmu'];
+
                     $this->main = $main;
                     $this->calls += $item['ct'];
                 }
@@ -99,24 +110,41 @@ class Stats
             $stat = new Stat();
             $stat->name = $child;
             $stat->wallTime = $item['wt'];
+            $stat->cpuTime = $item['cpu'];
             $stat->count = $item['ct'];
+            $stat->memoryUsage = $item['mu'];
+            $stat->peakMemoryUsage = $item['pmu'];
+
             $this->childStats[$parent][$child] = $stat;
 
             $stat = new Stat();
             $stat->name = $parent;
             $stat->wallTime = $item['wt'];
+            $stat->cpuTime = $item['cpu'];
             $stat->count = $item['ct'];
+            $stat->memoryUsage = $item['mu'];
+            $stat->peakMemoryUsage = $item['pmu'];
             $this->parentStats[$parent][$child] = $stat;
 
 
             if (!$childNesting) {
                 $childStat->wallTime += $item['wt'];
+                $childStat->cpuTime += $item['cpu'];
             }
             $childStat->ownTime += $item['wt'];
+            $childStat->ownCpuTime += $item['cpu'];
             $childStat->count += $item['ct'];
+            $childStat->memoryUsage += $item['mu'];
+            $childStat->peakMemoryUsage += $item['pmu'];
+            $childStat->peakMemoryShift += $item['pmu'];
+
 
             $parentStat->ownTime -= $item['wt'];
             $parentStat->childrenTime += $item['wt'];
+            $parentStat->ownCpuTime -= $item['cpu'];
+            //$parentStat->memoryUsage += $item['mu'];
+            $parentStat->childrenCpuTime += $item['cpu'];
+            $parentStat->peakMemoryShift -= $item['pmu'];
 
             $this->calls += $item['ct'];
         }
@@ -137,9 +165,9 @@ class Stats
         }
         uasort($data, function (Stat $a, Stat $b) use ($field, $one, $percent) {
             if ($one) {
-                return $a->$field/$a->count < $b->$field/$b->count;
+                return $a->$field / $a->count < $b->$field / $b->count;
             } elseif ($percent) {
-                return $a->$field/$this->main->$percent < $b->$field/$this->main->$percent;
+                return $a->$field / $this->main->$percent < $b->$field / $this->main->$percent;
             } else {
                 return $a->$field < $b->$field;
             }

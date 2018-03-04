@@ -30,11 +30,15 @@ Get basic info about profile
 
 ```
 xh-tool info --help
-v1.0.0 xh-tool info
+v1.1.0 xh-tool info
 XHPROF profile viewer
-Usage: 
+Usage:
    xh-tool info <profile>
    profile   Path to XHPROF hierarchical profile
+
+Options:
+   --cpu         Show CPU time instead of wall time
+   --with-mem    Add memory info
 ```
 
 ```
@@ -54,18 +58,22 @@ Get ordered functions list
 
 ```
 xh-tool top --help
-v1.0.0 xh-tool top
+v1.1.0 xh-tool top
 XHPROF profile viewer
-Usage: 
+Usage:
    xh-tool top <profile>
    profile   Path to XHPROF hierarchical profile
-   
-Options: 
-   --strip-nesting     Strip @N for nested calls                                                                                      
-   --limit <limit>     Number of rows in result, default no limit                                                                     
+
+Options:
+   --strip-nesting     Strip @N for nested calls
+   --limit <limit>     Number of rows in result, default no limit
    --filter <filter>   Case-insensitive regex to filter by function name, example: "process$", "swaggest", "^MyNs\\MyClass\\MyMethod$"
-   --order <order>     Order by field, default: ownTime                                                                               
-                       Allowed values: name, wallTime, wallTime1, wallTime%, ownTime, ownTime1, ownTime%, count
+   --cpu               Show CPU time instead of wall time
+   --with-mem          Add memory info
+   --order <order>     Order by field, default: ownTime
+                       Allowed values: name, wallTime, wallTime1, wallTime%, cpuTime, cpuTime1, cpuTime%, ownTime,
+                       ownTime1, ownTime%, ownCpuTime, ownCpuTime1, ownCpuTime%, memoryUsage1, peakMemoryUsage,
+                       peakMemoryShift, count
 ```
 
 Columns:
@@ -75,6 +83,15 @@ Columns:
 * `ownTime` is time spent in function (excluding child function calls).
 * `ownTime%` is `ownTime` normalized to to `main()` total time.
 * `ownTime1` is average time spent in 1 function call (excluding child function calls), valued as `ownTime / count`.
+* `cpuTime` is CPU time spent in function (including child function calls).
+* `cpuTime%` is CPU time spent in function normalized to `main()` total CPU time.
+* `cpuTime1` is average CPU time spent in 1 function call, valued as `cpuTime / count`.
+* `ownCpuTime` is time spent in function (excluding child function calls).
+* `ownCpuTime%` is `ownCpuTime` normalized to to `main()` total CPU time.
+* `ownCpuTime1` is average time spent in 1 function call (excluding child function calls), valued as `ownCpuTime / count`.
+* `memoryUsage1` is average memory usage by 1 function call.
+* `peakMemoryUsage` is a peak value of memory usage if changed after function call.
+* `peakMemoryShift` is amount of memory contributed by function to `peakMemoryUsage`.
 * `count` is number of function calls happened.
 
 
@@ -99,19 +116,22 @@ Swaggest\JsonSchema\Schema::process@4                                    3.06s  
 Get info on specific function
 
 ```
-xh-tool func --help
-v1.0.0 xh-tool func
+v1.1.0 xh-tool func
 XHPROF profile viewer
-Usage: 
+Usage:
    xh-tool func <profile> <filter>
-   profile   Path to XHPROF hierarchical profile                                                                            
+   profile   Path to XHPROF hierarchical profile
    filter    Case-insensitive regex to filter by function name, example: "process$", "swaggest", "^MyNs\\MyClass\\MyMethod$"
-   
-Options: 
-   --strip-nesting    Strip @N for nested calls                                                               
-   --limit <limit>    Number of rows in result, default no limit                                              
-   --order <order>    Order by field, default: ownTime                                                        
-                      Allowed values: name, wallTime, wallTime1, wallTime%, ownTime, ownTime1, ownTime%, count
+
+Options:
+   --strip-nesting    Strip @N for nested calls
+   --limit <limit>    Number of rows in result, default no limit
+   --cpu              Show CPU time instead of wall time
+   --with-mem         Add memory info
+   --order <order>    Order by field, default: ownTime
+                      Allowed values: name, wallTime, wallTime1, wallTime%, cpuTime, cpuTime1, cpuTime%, ownTime,
+                      ownTime1, ownTime%, ownCpuTime, ownCpuTime1, ownCpuTime%, memoryUsage1, peakMemoryUsage,
+                      peakMemoryShift, count
 ```
 
 ```
@@ -149,4 +169,43 @@ is_float                                     7.24ms     0.02        0.1us       
 is_int                                       7.64ms     0.02        0.1us       97K  
 is_string                                    8.06ms     0.02        0.1us       103K 
 PHPUnitBenchmark\Suite::jsonSerialize        22us       0           22us        1    
+```
+
+### Edges
+
+Show raw edges of profile data
+
+```
+xh-tool edges --help
+v1.1.0 xh-tool edges
+XHPROF profile viewer
+Usage:
+   xh-tool edges <profile>
+   profile   Path to XHPROF hierarchical profile
+
+Options:
+   --strip-nesting     Strip @N for nested calls
+   --limit <limit>     Number of rows in result, default no limit
+   --filter <filter>   Case-insensitive regex to filter by function name, example: "process$", "swaggest", "^MyNs\\MyClass\\MyMethod$"
+   --cpu               Show CPU time instead of wall time
+   --with-mem          Add memory info
+   --order <order>     Order by field, default: ownTime
+                       Allowed values: name, wallTime, wallTime1, wallTime%, cpuTime, cpuTime1, cpuTime%, ownTime,
+                       ownTime1, ownTime%, ownCpuTime, ownCpuTime1, ownCpuTime%, memoryUsage1, peakMemoryUsage,
+                       peakMemoryShift, count
+```
+
+```
+xh-tool edges xhprof_report_sample.1518071438.9016.serialized --order ownTime --limit 10 --filter swaggest
+name                                                                                            wallTime   wallTime%   wallTime1   count
+Swaggest\JsonSchema\Schema::processObject@1==>Swaggest\JsonSchema\Schema::process@2             5.23s      14.96       172.1us     30K
+Swaggest\JsonSchema\Helper::toPregPattern==>strpos                                              905us      0           0.2us       5K
+Swaggest\JsonSchema\Schema::processObject==>spl_autoload_call                                   13.55ms    0.04        4.52ms      3
+Swaggest\JsonSchema\Schema::processObject==>Swaggest\JsonSchema\Structure\ObjectItem::key       7.8ms      0.02        1.7us       5K
+Swaggest\JsonSchema\Structure\ObjectItem::key==>ArrayIterator::key                              574us      0           0.1us       5K
+Swaggest\JsonSchema\Schema::processObject==>Swaggest\JsonSchema\Structure\ObjectItem::current   8.25ms     0.02        1.8us       5K
+Swaggest\JsonSchema\Structure\ObjectItem::current==>ArrayIterator::current                      463us      0           0.1us       5K
+Swaggest\JsonSchema\Schema::processObject==>Swaggest\JsonSchema\Structure\ObjectItem::valid     12.79ms    0.04        1.9us       7K
+Swaggest\JsonSchema\Structure\ObjectItem::valid==>ArrayIterator::valid                          1.08ms     0           0.2us       7K
+Swaggest\JsonSchema\Schema::processObject==>Swaggest\JsonSchema\Structure\ObjectItem::rewind    9.72ms     0.03        2.9us       3K
 ```
